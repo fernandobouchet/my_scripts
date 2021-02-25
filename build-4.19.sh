@@ -21,17 +21,20 @@ export ZIPNAME="Extended-${VERSION}.zip"
 # Set COMPILER
 export ARCH=arm64 && export SUBARCH=arm64
 export KBUILD_JOBS="$((`grep -c '^processor' /proc/cpuinfo` * 2))"
+if [[ "$@" =~ "clang" ]]; then
+	export PATH="$(pwd)/clang/bin:$PATH"
+elif [[ "$@" =~ "gcc" ]]; then
+    export CROSS_COMPILE="$(pwd)/gcc/bin/aarch64-elf-"
+	export CROSS_COMPILE_ARM32="$(pwd)/gcc32/bin/arm-eabi-"
+fi
 
 # Compilation
 START=$(date +"%s")
 make O=out clean && make O=out mrproper
 make O=out ARCH=arm64 vendor/whyred_defconfig
 if [[ "$@" =~ "clang" ]]; then
-	export PATH="$(pwd)/clang/bin:$PATH"
 	make -j${KBUILD_JOBS} O=out ARCH=arm64 CC="clang" CROSS_COMPILE="aarch64-linux-gnu-" CROSS_COMPILE_ARM32="arm-linux-gnueabi-"
 elif [[ "$@" =~ "gcc" ]]; then
-    export CROSS_COMPILE="$(pwd)/gcc/bin/aarch64-elf-"
-	export CROSS_COMPILE_ARM32="$(pwd)/gcc32/bin/arm-eabi-"
 	make -j${KBUILD_JOBS} O=out ARCH=arm64
 fi
 END=$(date +"%s")
