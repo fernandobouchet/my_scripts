@@ -6,10 +6,10 @@ BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 # Release type
 if [[ $BRANCH == "extended" ]]; then
 	curl -s -X POST https://api.telegram.org/bot${BOT_API_TOKEN}/sendMessage -d text="<i><b>Extended Hmp ${STABLE_RELEASE_VERSION} build's started on CI...</b></i>" -d chat_id=${KERNEL_CHAT_ID_PUBLIC} -d parse_mode=HTML
-	export VERSION="Kernel-${STABLE_RELEASE_VERSION}"
+	export VERSION="Kernel-4.19-${STABLE_RELEASE_VERSION}"
 else
 	curl -s -X POST https://api.telegram.org/bot${BOT_API_TOKEN}/sendMessage -d text="<i><b>Extended Beta ${BRANCH} build's started on CI...</b></i>" -d chat_id=${KERNEL_CHAT_ID_PRIVATE} -d parse_mode=HTML
-	export VERSION="Kernel-Beta-${BRANCH}-${SEMAPHORE_WORKFLOW_NUMBER}"
+	export VERSION="Kernel-4.19-Beta-${BRANCH}-${SEMAPHORE_WORKFLOW_NUMBER}"
 fi
 
 # Export User, Host and Local Version
