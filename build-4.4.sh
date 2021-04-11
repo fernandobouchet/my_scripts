@@ -73,13 +73,14 @@ fi
 <b>Branch:</b> <i><code>$(git rev-parse --abbrev-ref HEAD)</code></i>
 <b>Latest Commit:</b> <i><code>$(git log --pretty=format:'%h : %s' -1)</code></i>
 <b>Compilation Time:</b> <i><code>$((DIFF / 60)) minute(s) and $((DIFF % 60)) seconds</code></i>" -d chat_id=${KERNEL_CHAT_ID_PRIVATE} -d parse_mode=HTML
+	mkdir $(pwd)/releases
 	cd anykernel
-	zip -r9 ${ZIPNAME} *
+	zip -r9 ${ZIPNAME} $(pwd)/releases
+	cd $(pwd)/releases
 	curl -F chat_id="${KERNEL_CHAT_ID_PRIVATE}" \
                     -F caption="$(sha1sum ${ZIPNAME} | awk '{ print $1 }')" \
-                    -F document=@"$(pwd)/${ZIPNAME}" \
+                    -F document=@"$(pwd)/releases/${ZIPNAME}" \
                     https://api.telegram.org/bot${BOT_API_TOKEN}/sendDocument
-    rm -rf ${ZIPNAME} && rm -rf Image.gz-dtb
 else
         if [[ $BRANCH == "extended" || $BRANCH == "extended-eas" ]]; then
         curl -s -X POST https://api.telegram.org/bot${BOT_API_TOKEN}/sendMessage -d text="<i><b>Extended-${VERSION} build finished with errors...</b></i>" -d chat_id=${KERNEL_CHAT_ID_PUBLIC} -d parse_mode=HTML
