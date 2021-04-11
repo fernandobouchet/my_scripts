@@ -75,8 +75,8 @@ fi
 <b>Compilation Time:</b> <i><code>$((DIFF / 60)) minute(s) and $((DIFF % 60)) seconds</code></i>" -d chat_id=${KERNEL_CHAT_ID_PRIVATE} -d parse_mode=HTML
 	mkdir $(pwd)/releases
 	cd anykernel
-	zip -r9 ${ZIPNAME} $(pwd)/releases
-	cd $(pwd)/releases
+	zip -r9 ${ZIPNAME} *
+	cd .. && mv $(pwd)/anykernel/${ZIPNAME} $(pwd)/releases
 	curl -F chat_id="${KERNEL_CHAT_ID_PRIVATE}" \
                     -F caption="$(sha1sum ${ZIPNAME} | awk '{ print $1 }')" \
                     -F document=@"$(pwd)/releases/${ZIPNAME}" \
