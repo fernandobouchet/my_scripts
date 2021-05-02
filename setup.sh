@@ -6,18 +6,11 @@ git clone https://github.com/attack11/AnyKernel3 -b Extended-Kernel --depth=1 an
 if [[ "$@" =~ "clang" ]]; then
 	git clone https://github.com/kdrag0n/proton-clang.git --depth=1 clang
 elif [[ "$@" =~ "gcc" ]]; then
-	git clone https://github.com/arter97/arm64-gcc.git -b master --depth=1 gcc
-	git clone https://github.com/arter97/arm32-gcc.git -b master --depth=1 gcc32
+	git clone https://github.com/arter97/arm64-gcc.git -b master --depth=3 gcc
+	git clone https://github.com/arter97/arm32-gcc.git -b master --depth=3 gcc32
+	cd gcc
+	git checkout cd9eb72bace3b4d682d5251a9eb4829bdd0ec2ca
+	cd ../gcc32
+	git checkout b788b457799d68553f51a00a5dd4a1d0ea6b0558
 	cd ..
-	mkdir ~/glibc_install
-	cd ~/glibc_install
-	wget http://ftp.gnu.org/gnu/glibc/glibc-2.33.tar.gz
-	tar zxvf glibc-2.33.tar.gz
-	cd glibc-2.33
-	mkdir build
-	cd build
-	../configure --prefix=/opt/glibc-2.33
-	make -j4
-	sudo make install
-	export LD_LIBRARY_PATH=/opt/glibc-2.33/lib
 fi
