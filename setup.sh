@@ -16,8 +16,8 @@ elif [[ "$@" =~ "gcc" ]]; then
 	cd glibc-2.33
 	mkdir build
 	cd build
-	../configure –prefix=/opt/glibc-2.33
+	../configure --prefix=/opt/glibc-2.33
 	make -j4
-	sudo make install -y
+	sudo make install
 	export LD_LIBRARY_PATH=/opt/glibc-2.33/lib
 fi
