@@ -78,7 +78,7 @@ fi
 	zip -r9 ${ZIPNAME} *
 	cd .. && mv $(pwd)/anykernel/${ZIPNAME} $(pwd)/releases
 	curl -F chat_id="${KERNEL_CHAT_ID_PRIVATE}" \
-                    -F caption="$(sha1sum ${ZIPNAME} | awk '{ print $1 }')" \
+                    -F caption="$(sha1sum $(pwd)/releases/${ZIPNAME} | awk '{ print $1 }')" \
                     -F document=@"$(pwd)/releases/${ZIPNAME}" \
                     https://api.telegram.org/bot${BOT_API_TOKEN}/sendDocument
 else
