@@ -5,7 +5,7 @@ BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 
 # Release type
 if [[ $BRANCH == "extended" ]]; then
-	curl -s -X POST https://api.telegram.org/bot${BOT_API_TOKEN}/sendMessage -d text="<i><b>Extended Hmp ${STABLE_RELEASE_VERSION} build's started on CI...</b></i>" -d chat_id=${KERNEL_CHAT_ID_PUBLIC} -d parse_mode=HTML
+	curl -s -X POST https://api.telegram.org/bot${BOT_API_TOKEN}/sendMessage -d text="<i><b>Extended 4-19 ${STABLE_RELEASE_VERSION} build's started on CI...</b></i>" -d chat_id=${KERNEL_CHAT_ID_PUBLIC} -d parse_mode=HTML
 	export VERSION="Kernel-4.19-${STABLE_RELEASE_VERSION}"
 else
 	curl -s -X POST https://api.telegram.org/bot${BOT_API_TOKEN}/sendMessage -d text="<i><b>Extended Beta ${BRANCH} build's started on CI...</b></i>" -d chat_id=${KERNEL_CHAT_ID_PRIVATE} -d parse_mode=HTML
@@ -58,7 +58,7 @@ fi
                     https://api.telegram.org/bot${BOT_API_TOKEN}/sendDocument
     rm -rf ${ZIPNAME} && rm -rf Image.gz-dtb
 else
-        if [[ $BRANCH == "extended" || $BRANCH == "extended-eas" ]]; then
+        if [[ $BRANCH == "extended" ]]; then
         curl -s -X POST https://api.telegram.org/bot${BOT_API_TOKEN}/sendMessage -d text="<i><b>Extended-${VERSION} build finished with errors...</b></i>" -d chat_id=${KERNEL_CHAT_ID_PUBLIC} -d parse_mode=HTML
         curl -s -X POST https://api.telegram.org/bot${BOT_API_TOKEN}/sendMessage -d text="<i><b>Extended-${VERSION} build finished with errors...</b></i>" -d chat_id=${KERNEL_CHAT_ID_PRIVATE} -d parse_mode=HTML
         else
