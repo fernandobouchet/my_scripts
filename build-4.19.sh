@@ -31,10 +31,11 @@ fi
 
 # Compilation
 START=$(date +"%s")
-make O=out $DEFCONFIG
 if [[ "$@" =~ "clang" ]]; then
+	make O=out CC=clang $DEFCONFIG
 	make -j${KBUILD_JOBS} O=out ARCH=arm64 CC="clang" CROSS_COMPILE="aarch64-linux-gnu-" CROSS_COMPILE_ARM32="arm-linux-gnueabi-"
 elif [[ "$@" =~ "gcc" ]]; then
+	make O=out $DEFCONFIG
 	make -j${KBUILD_JOBS} O=out
 fi
 END=$(date +"%s")
