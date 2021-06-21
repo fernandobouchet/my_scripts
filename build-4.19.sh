@@ -17,14 +17,13 @@ export LOCALVERSION=`echo -${VERSION}`
 export KBUILD_BUILD_USER=attack11
 export KBUILD_BUILD_HOST=xda
 export ZIPNAME="Extended-${VERSION}.zip"
+export DEFCONFIG=vendor/whyred_defconfig
 
 # Set COMPILER
 export ARCH=arm64
 export KBUILD_JOBS="$((`grep -c '^processor' /proc/cpuinfo` * 2))"
 if [[ "$@" =~ "clang" ]]; then
 	export PATH="$(pwd)/clang/bin:$PATH"
-    export CROSS_COMPILE="$(pwd)/gcc/bin/aarch64-linux-gnu-"
-	export CROSS_COMPILE_COMPAT="$(pwd)/gcc32/bin/arm-linux-gnueabi-"
 elif [[ "$@" =~ "gcc" ]]; then
     export CROSS_COMPILE="$(pwd)/gcc/bin/aarch64-elf-"
 	export CROSS_COMPILE_ARM32="$(pwd)/gcc32/bin/arm-eabi-"
@@ -32,11 +31,10 @@ fi
 
 # Compilation
 START=$(date +"%s")
+make O=out $DEFCONFIG
 if [[ "$@" =~ "clang" ]]; then
-	make CC="clang" O=out whyred_defconfig
-	make -j${KBUILD_JOBS} O=out CC="clang"
+	make -j${KBUILD_JOBS} O=out ARCH=arm64 CC="clang" CROSS_COMPILE="aarch64-linux-gnu-" CROSS_COMPILE_ARM32="arm-linux-gnueabi-"
 elif [[ "$@" =~ "gcc" ]]; then
-	make O=out whyred_defconfig
 	make -j${KBUILD_JOBS} O=out
 fi
 END=$(date +"%s")
