@@ -17,25 +17,34 @@ export LOCALVERSION=`echo -${VERSION}`
 export KBUILD_BUILD_USER=attack11
 export KBUILD_BUILD_HOST=xda
 export ZIPNAME="Extended-${VERSION}.zip"
-export DEFCONFIG=vendor/whyred_defconfig
+export DEFCONFIG=whyred_defconfig
 
 # Set COMPILER
 export ARCH=arm64
 export KBUILD_JOBS="$((`grep -c '^processor' /proc/cpuinfo` * 2))"
 if [[ "$@" =~ "clang" ]]; then
-	export PATH="$(pwd)/clang/bin:$PATH"
+    export PATH="$(pwd)/clang/bin:$PATH"
 elif [[ "$@" =~ "gcc" ]]; then
     export CROSS_COMPILE="$(pwd)/gcc/bin/aarch64-elf-"
-	export CROSS_COMPILE_ARM32="$(pwd)/gcc32/bin/arm-eabi-"
+    export CROSS_COMPILE_ARM32="$(pwd)/gcc32/bin/arm-eabi-"
 fi
 
 # Compilation
 START=$(date +"%s")
+make O=out vendor/$DEFCONFIG
 if [[ "$@" =~ "clang" ]]; then
-	make O=out CC=clang $DEFCONFIG
-	make -j${KBUILD_JOBS} O=out ARCH=arm64 CC="clang" CROSS_COMPILE="aarch64-linux-gnu-" CROSS_COMPILE_ARM32="arm-linux-gnueabi-"
+	make O=out -j${JOBS} \
+	CC="clang" \
+	AR="llvm-ar" \
+	NM="llvm-nm" \
+	OBJCOPY="llvm-objcopy" \
+	OBJDUMP="llvm-objdump" \
+	STRIP="llvm-strip" \
+	LD="ld.lld" \
+	CROSS_COMPILE="aarch64-linux-gnu-" \
+	CROSS_COMPILE_ARM32="arm-linux-gnueabi-" \
+	KBUILD_COMPILER_STRING="$(${CLANG_PATH}/bin/clang --version | head -n 1 | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')"
 elif [[ "$@" =~ "gcc" ]]; then
-	make O=out $DEFCONFIG
 	make -j${KBUILD_JOBS} O=out
 fi
 END=$(date +"%s")
