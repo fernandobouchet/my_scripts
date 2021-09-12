@@ -21,10 +21,10 @@ export DEFCONFIG=whyred_defconfig
 
 # Set COMPILER
 export ARCH=arm64
-export KBUILD_JOBS="$((`grep -c '^processor' /proc/cpuinfo` * 2))"
 if [[ "$@" =~ "clang" ]]; then
     export PATH="$(pwd)/clang/bin:$PATH"
-    export KBUILD_COMPILER_STRING="$(${CLANG_PATH}/bin/clang --version | head -n 1 | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')";
+    export CROSS_COMPILE="aarch64-linux-gnu-"
+    export CROSS_COMPILE_ARM32="arm-linux-gnueabi-"
 elif [[ "$@" =~ "gcc" ]]; then
     export CROSS_COMPILE="$(pwd)/gcc/bin/aarch64-elf-"
     export CROSS_COMPILE_ARM32="$(pwd)/gcc32/bin/arm-eabi-"
@@ -32,19 +32,11 @@ fi
 
 # Compilation
 START=$(date +"%s")
-make O=out vendor/$DEFCONFIG
 if [[ "$@" =~ "clang" ]]; then
-	make O=out -j${KBUILD_JOBS} \
-	CROSS_COMPILE="aarch64-linux-gnu-" \
-	CROSS_COMPILE_ARM32="arm-linux-gnueabi-" \
-	CC="clang" \
-	AR="llvm-ar" \
-	NM="llvm-nm" \
-	OBJCOPY="llvm-objcopy" \
-	OBJDUMP="llvm-objdump" \
-	STRIP="llvm-strip" \
-	LD="ld.lld"
+	make -j$(nproc --all) O=out CC=clang AR=llvm-ar LD=ld.lld NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip vendor/$DEFCONFIG
+	make -j$(nproc --all) O=out CC=clang AR=llvm-ar LD=ld.lld NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip CROSS_COMPILE=aarch64-linux-gnu-
 elif [[ "$@" =~ "gcc" ]]; then
+	make -j$(nproc --all) O=out vendor/$DEFCONFIG
 	make -j${KBUILD_JOBS} O=out
 fi
 END=$(date +"%s")
