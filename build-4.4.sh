@@ -44,7 +44,7 @@ make O=out clean && make O=out mrproper
 if [[ "$@" =~ "clang" ]]; then
 	export PATH="$(pwd)/clang/bin:$PATH"
 	make O=out ARCH=arm64 $DEFCONFIG
-	make -j$(nproc --all) O=out ARCH=arm64 CC="clang" AR="llvm-ar" NM="llvm-nm" OBJCOPY="llvm-objcopy" OBJDUMP="llvm-objdump" STRIP="llvm-strip" LD="ld.lld" CROSS_COMPILE="aarch64-linux-gnu-" CROSS_COMPILE_ARM32="arm-linux-gnueabi-"
+	make -j$(nproc --all) O=out ARCH=arm64 CC="clang" CROSS_COMPILE="aarch64-linux-gnu-" CROSS_COMPILE_ARM32="arm-linux-gnueabi-"
 elif [[ "$@" =~ "gcc" ]]; then
   	export CROSS_COMPILE="$(pwd)/gcc/bin/aarch64-elf-"
 	export CROSS_COMPILE_ARM32="$(pwd)/gcc32/bin/arm-eabi-"
