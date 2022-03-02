@@ -64,7 +64,7 @@ DIFF=$((END - START))
 if [ -f $(pwd)/out/arch/arm64/boot/Image.gz-dtb ]
 	then
 	cp $(pwd)/out/arch/arm64/boot/Image.gz-dtb $(pwd)/anykernel
-if [[ $BRANCH == "extended" || $BRANCH == "extended-eas" || $BRANCH == "extended-eas-haptics"]]; then
+if [[ $BRANCH == "extended" || $BRANCH == "extended-eas" || $BRANCH == "extended-eas-haptics" ]]; then
 	curl -s -X POST https://api.telegram.org/bot${BOT_API_TOKEN}/sendMessage -d text="<i><b>Extended-${VERSION} build compiled successfully in $((DIFF / 60)) minute(s) and $((DIFF % 60)) seconds...</b></i>" -d chat_id=${KERNEL_CHAT_ID_PUBLIC} -d parse_mode=HTML
 fi
 	curl -s -X POST https://api.telegram.org/bot${BOT_API_TOKEN}/sendMessage -d text="<b>Repository:</b> <i><code>$(basename `git rev-parse --show-toplevel`)</code></i>
