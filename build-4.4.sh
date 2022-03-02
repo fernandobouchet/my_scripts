@@ -11,6 +11,13 @@ if [[ $BRANCH == "extended" ]]; then
 	elif [[ "$@" =~ "newcam" ]]; then
 	export VERSION="Kernel-4.4-Hmp-Newcam-${STABLE_RELEASE_VERSION}"
 	fi
+elif [[ $BRANCH == "extended-eas-haptics" ]]; then
+    if [[ "$@" =~ "oldcam" ]]; then
+	curl -s -X POST https://api.telegram.org/bot${BOT_API_TOKEN}/sendMessage -d text="<i><b>Extended Eas Qti Haptics 4.4 ${STABLE_RELEASE_VERSION} build's started on CI...</b></i>" -d chat_id=${KERNEL_CHAT_ID_PUBLIC} -d parse_mode=HTML
+	export VERSION="Kernel-4.4-Eas-qti_haptics-Oldcam-${STABLE_RELEASE_VERSION}"
+	elif [[ "$@" =~ "newcam" ]]; then
+	export VERSION="Kernel-4.4-Eas-qti_haptics-Newcam-${STABLE_RELEASE_VERSION}"
+	fi
 elif [[ $BRANCH == "extended-eas" ]]; then
     if [[ "$@" =~ "oldcam" ]]; then
 	curl -s -X POST https://api.telegram.org/bot${BOT_API_TOKEN}/sendMessage -d text="<i><b>Extended Eas 4.4 ${STABLE_RELEASE_VERSION} build's started on CI...</b></i>" -d chat_id=${KERNEL_CHAT_ID_PUBLIC} -d parse_mode=HTML
@@ -57,7 +64,7 @@ DIFF=$((END - START))
 if [ -f $(pwd)/out/arch/arm64/boot/Image.gz-dtb ]
 	then
 	cp $(pwd)/out/arch/arm64/boot/Image.gz-dtb $(pwd)/anykernel
-if [[ $BRANCH == "extended" || $BRANCH == "extended-eas" ]]; then
+if [[ $BRANCH == "extended" || $BRANCH == "extended-eas" || $BRANCH == "extended-eas-haptics"]]; then
 	curl -s -X POST https://api.telegram.org/bot${BOT_API_TOKEN}/sendMessage -d text="<i><b>Extended-${VERSION} build compiled successfully in $((DIFF / 60)) minute(s) and $((DIFF % 60)) seconds...</b></i>" -d chat_id=${KERNEL_CHAT_ID_PUBLIC} -d parse_mode=HTML
 fi
 	curl -s -X POST https://api.telegram.org/bot${BOT_API_TOKEN}/sendMessage -d text="<b>Repository:</b> <i><code>$(basename `git rev-parse --show-toplevel`)</code></i>
@@ -73,7 +80,7 @@ fi
                     -F document=@"$(pwd)/releases/${ZIPNAME}" \
                     https://api.telegram.org/bot${BOT_API_TOKEN}/sendDocument
 else
-        if [[ $BRANCH == "extended" || $BRANCH == "extended-eas" ]]; then
+        if [[ $BRANCH == "extended" || $BRANCH == "extended-eas" || $BRANCH == "extended-eas-haptics" ]]; then
         curl -s -X POST https://api.telegram.org/bot${BOT_API_TOKEN}/sendMessage -d text="<i><b>Extended-${VERSION} build finished with errors...</b></i>" -d chat_id=${KERNEL_CHAT_ID_PUBLIC} -d parse_mode=HTML
         curl -s -X POST https://api.telegram.org/bot${BOT_API_TOKEN}/sendMessage -d text="<i><b>Extended-${VERSION} build finished with errors...</b></i>" -d chat_id=${KERNEL_CHAT_ID_PRIVATE} -d parse_mode=HTML
         else
